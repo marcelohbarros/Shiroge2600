@@ -14,14 +14,26 @@
     %00111101
 end
 
+    const BLACK = 0
+    const GRAY = 7
+    const RED = 67
+    const WHITE = 15
+    const GREEN = 198
+    const ZERO_LIFE_COUNT = 0
+    const ONE_LIFE_COUNT = 128
+    const TWO_LIFE_COUNT = 160
+    const THREE_LIFE_COUNT = 168
+    const END_LEVEL = 137
+    const BOTTOM_LEVEL = 85
+
     rem Background color
-    COLUBK = 0
+    COLUBK = BLACK
 
     const pfscore=1
 
     rem Player and score color
-    scorecolor = 7
-    pfscorecolor = 67
+    scorecolor = GRAY
+    pfscorecolor = RED
  
     rem Direction player is looking
     dim direction = d
@@ -50,9 +62,8 @@ end
  
     dim life = l
     life = 3
-
-    dim level = m
-    level = 1
+    
+    dim level = score + 2
 
     rem Run every time a life is lost
 level1
@@ -73,12 +84,9 @@ end
     rem Initial position and speed
     player0x = 25
     player0y = 24
-    vel = 128
-    direction{0} = 1
-    jumped{0} = 1
-    score = 1
+    level = 1
 
-    goto main
+    goto startstage
  
 level2
     playfield:
@@ -98,12 +106,9 @@ end
     rem Initial position and speed
     player0x = 25
     player0y = 25
-    vel = 128
-    direction{0} = 1
-    jumped = 1
-    score = 2
+    level = 2
 
-    goto main
+    goto startstage
 
 level3
     playfield:
@@ -123,12 +128,16 @@ end
     rem Initial position and speed
     player0x = 25
     player0y = 25
+    level = 3
+
+    goto startstage
+
+startstage
     vel = 128
     direction{0} = 1
     jumped = 1
-    score = 3
-
     goto main
+
 
     rem Main routine
 main
@@ -163,19 +172,19 @@ main
     tilex = (xnext - 14) / 4 + 1
     if pfread(tilex, tiley) then ynext = player0y : vel = 128 : jumped{0} = 0
 
-    if ynext >= 85 then goto lostlive
+    if ynext >= BOTTOM_LEVEL then goto lostlive
 
     rem draw life bar
-    if life = 3 then pfscore1 = 168
-    if life = 2 then pfscore1 = 160
-    if life = 1 then pfscore1 = 128
-    if life = 0 then pfscore1 = 0
+    if life = 3 then pfscore1 = THREE_LIFE_COUNT
+    if life = 2 then pfscore1 = TWO_LIFE_COUNT
+    if life = 1 then pfscore1 = ONE_LIFE_COUNT
+    if life = 0 then pfscore1 = ZERO_LIFE_COUNT
 
     rem Updating position
     player0x = xnext
     player0y = ynext
 
-    if player0x > 137 goto nextlevel
+    if player0x > END_LEVEL goto nextlevel
 
     rem Draw screen and setup screen registers 
 draw
@@ -183,10 +192,10 @@ draw
     if direction{0} then REFP0 = 8
 
     rem Player color
-    COLUP0 = 15
+    COLUP0 = WHITE
  
     rem Playfield color
-    COLUPF = 198
+    COLUPF = GREEN
 
     drawscreen
     goto main
@@ -194,15 +203,11 @@ draw
 lostlive
     if life = 0 then goto gameover
     life = life - 1
-    if level = 1 then goto level1
-    if level = 2 then goto level2
-    if level = 3 then goto level3
+    on level goto gameover level1 level2 level3
 
 nextlevel
     level = level + 1
-    if level = 1 then goto level1
-    if level = 2 then goto level2
-    if level = 3 then goto level3
+    on level goto gameover level1 level2 level3 gameover
 
 gameover
     life = 3
