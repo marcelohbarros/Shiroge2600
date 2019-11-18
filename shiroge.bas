@@ -1,6 +1,7 @@
     rem Screen settings
     set tv ntsc
     set romsize 4k
+    set kernel_options pfcolors no_blank_line background
 
     rem Player sprite
     player0:
@@ -12,6 +13,22 @@
     %00101100
     %01010111
     %00111101
+end
+
+    pfcolors:
+    0
+    176
+    176
+    242
+    242
+    242
+    112
+    112
+    210
+    210
+    176
+    0
+    0
 end
 
     const BLACK = 0
@@ -29,7 +46,7 @@ end
     rem Background color
     COLUBK = BLACK
 
-    const pfscore=1
+    const pfscore = 1
 
     rem Player and score color
     scorecolor = GRAY
@@ -172,7 +189,7 @@ main
     tilex = (xnext - 14) / 4 + 1
     if pfread(tilex, tiley) then ynext = player0y : vel = 128 : jumped{0} = 0
 
-    if ynext >= BOTTOM_LEVEL then goto lostlive
+    if ynext >= BOTTOM_LEVEL then goto lostlife
 
     rem draw life bar
     if life = 3 then pfscore1 = THREE_LIFE_COUNT
@@ -192,15 +209,17 @@ draw
     if direction{0} then REFP0 = 8
 
     rem Player color
-    COLUP0 = WHITE
+    COLUP0 = 252
  
     rem Playfield color
-    COLUPF = GREEN
+    COLUPF = 240
+    
+    PF0=255
 
     drawscreen
     goto main
 
-lostlive
+lostlife
     if life = 0 then goto gameover
     life = life - 1
     on level goto gameover level1 level2 level3
