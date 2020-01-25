@@ -201,7 +201,7 @@ main
     player0x = xnext
     player0y = ynext
 
-    if player0x > END_LEVEL goto nextlevel
+    if player0x > END_LEVEL then goto nextlevel
 
     rem Draw screen and setup screen registers 
 draw
