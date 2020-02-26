@@ -82,6 +82,26 @@ end
     
     dim level = score + 2
 
+menu
+    playfield:
+................................
+................................
+.XXX..XX.XXXXXXX..XX...X.X......
+...XX.XX.XX...XX.XXXXXXXX.......
+.XX...XX.XX...XX.X..XX...XXXXXX.
+..XX.XX..XX...XX....XX..........
+....XX...XXXXXXX...XX...........
+..XXX....XX...XX.XXX............
+................................
+................................
+end
+    player0x = 0
+    player0y = 0
+    level = 0
+
+    if joy0fire then goto level1 else goto draw
+    goto menu
+
     rem Run every time a life is lost
 level1
     playfield:
@@ -214,21 +234,21 @@ draw
     rem Playfield color
     COLUPF = 240
     
-    PF0=255
+    PF0 = 255
 
     drawscreen
-    goto main
+    if level = 0 then goto menu else goto main
 
 lostlife
     if life = 0 then goto gameover
     life = life - 1
-    on level goto gameover level1 level2 level3
+    on level goto menu level1 level2 level3
 
 nextlevel
     level = level + 1
-    on level goto gameover level1 level2 level3 gameover
+    on level goto menu level1 level2 level3 gameover
 
 gameover
     life = 3
-    if joy0fire then goto level1
+    if joy0fire then goto menu 
     goto gameover
